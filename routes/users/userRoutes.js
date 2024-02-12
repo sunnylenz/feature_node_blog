@@ -1,12 +1,13 @@
 const express = require('express');
 const userRouter = express.Router();
 const { userRegisterCtrl, userLoginCtrl, userProfileCtrl, usersCtrl, deleteUsersCtrl, updateUserCtrl } = require('../../controllers/usersController');
+const isLoggedIn = require('../../middlewares/isLoggedIn');
 
 userRouter.post('/register', userRegisterCtrl);
 
 userRouter.post('/login', userLoginCtrl);
 
-userRouter.get('/profile/:id', userProfileCtrl);
+userRouter.get('/profile/:id', isLoggedIn, userProfileCtrl);
 
 userRouter.get('/', usersCtrl);
 

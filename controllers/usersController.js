@@ -67,12 +67,12 @@ const userLoginCtrl = async (req, res) => {
 }
 
 const userProfileCtrl = async (req, res) => {
-
+    console.log(req.userAuth);
     const { id } = req.params;
     try {
         // get token from header
         const token = getTokenFromHeader(req);
-        console.log(token);
+
         const user = await User.findById(id);
         res.json({
             status: 'success',
