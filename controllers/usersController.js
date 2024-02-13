@@ -7,15 +7,13 @@ const getTokenFromHeader = require('../utils/getTokenFromHeader');
 
 
 
-const userRegisterCtrl = async (req, res) => {
+const userRegisterCtrl = async (req, res, next) => {
     const { firstname, lastname, profilePhoto, email, password } = req.body
     try {
         //check if email exist
         const userFound = await User.findOne({ email });
         if (userFound) {
-            return res.json({
-                msg: 'User already exist'
-            });
+            return next(new Error("User Already Exists"));
         }
 
         // hash the password
@@ -34,8 +32,8 @@ const userRegisterCtrl = async (req, res) => {
             data: user,
         });
     } catch (error) {
-        res.json(error.message);
-    }
+        next(new Error(error.message));
+    }                         
 }
 
 

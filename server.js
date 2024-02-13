@@ -21,32 +21,24 @@ app.use('/api/v1/posts/', postRouter);
 app.use('/api/v1/comments/', commentRouter);
 app.use('/api/v1/categories/', categoriesRouter);
 
-//POST/api/v1/users/login
-
-//GET/api/v1/users/profile/:id
-
-//GET/api/v1/users
-
-//DELETE/api/v1/users/:id
-
-//PUT/api/v1/users/:id
-
-//.............
-//posts route
-//..............
-
-//POST/api/v1/posts
-//..................
-//comments route
-//..................
-
-
-//...................
-//categories route
-//...................
 
 
 // erro handlers middleware
+app.use((err, req, res, next) => {
+    //status
+    //message
+    //stack
+    const stack = err.stack;
+    const message = err.message;
+    const status = err.status ? err.status : 'failed';
+    const statusCode = err?.statusCode ? err.statusCode : 500;
+    // send response to user
+    res.status(statusCode).json({
+        stack,
+        status,
+        message,
+    });
+});
 // Listen to server
 
 const PORT = process.env.PORT || 9000;
