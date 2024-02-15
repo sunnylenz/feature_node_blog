@@ -116,12 +116,39 @@ const updateUserCtrl = async (req, res) => {
 const profilePhotoUploadCtrl = async (req, res) => {
     console.log(req.file);
     try {
-        res.json({
-            status: 'success',
-            data: 'profile photo upload'
-        })
+        //1. Find the user to be updated
+        const userToUpdate = await User.findById(req.userAuth);
+        //2. check if the user is found
+        if (!userToUpdate) {
+            return next(new AppErr("User not found", 403));
+        }
+        //3. check if the user is blocked
+        if (userToUpdate.isBlocked) {
+            return next(new AppErr("Action not allowed", 403));
+        }
+        //4. Check if a user is updating their photo
+        if (req) {
+            //5. update profile
+            await User.findByIdAndUpdate(
+                req.userAuth,
+                {
+                    $set: {
+                        profilePhoto: req.file.path,
+                    },
+                },
+                {
+                    new: true,
+                }
+            );
+            res.json({
+                status: 'success',
+                data: 'you have succesfully updated your profile photo'
+            });
+
+        }
+
     } catch (error) {
-        res.json(error.message);
+        res.json(new AppErr(error.message, 500));
     }
 }
 

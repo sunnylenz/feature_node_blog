@@ -19,6 +19,6 @@ userRouter.get('/', usersCtrl);
 userRouter.delete('/:id', deleteUsersCtrl);
 
 userRouter.put('/:id', updateUserCtrl);
-userRouter.post("/profile-photo-upload", upload.single('profile'), profilePhotoUploadCtrl);
+userRouter.post("/profile-photo-upload", isLoggedIn, upload.single('profile'), profilePhotoUploadCtrl);
 
 module.exports = userRouter;
