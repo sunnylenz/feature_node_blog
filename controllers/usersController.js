@@ -113,6 +113,17 @@ const updateUserCtrl = async (req, res) => {
         res.json(error.message);
     }
 }
+const profilePhotoUploadCtrl = async (req, res) => {
+    console.log(req.file);
+    try {
+        res.json({
+            status: 'success',
+            data: 'profile photo upload'
+        })
+    } catch (error) {
+        res.json(error.message);
+    }
+}
 
 module.exports = {
     userRegisterCtrl,
@@ -120,5 +131,6 @@ module.exports = {
     userProfileCtrl,
     usersCtrl,
     deleteUsersCtrl,
-    updateUserCtrl
+    updateUserCtrl,
+    profilePhotoUploadCtrl
 }
