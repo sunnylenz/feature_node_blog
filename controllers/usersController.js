@@ -91,6 +91,40 @@ const usersCtrl = async (req, res) => {
         res.json(error.message);
     }
 }
+// following
+const followingCtrl = async (req, res, next) => {
+    try {
+        // 1. find the user to follow
+        const userToFollow = await User.findById(req.params.id);
+        // 2. find the user who is following
+        const userWhoFollowed = await User.findById(req.userAuth);
+        // 3. check if user and user  who followed are found
+        if (userToFollow && userWhoFollowed) {
+            // 4. check if user who followed is already on the users followers array
+            const isAlreadyFollowed = userToFollow.followers.find(follower => follower.toString() === userWhoFollowed._id.toString())
+            if (isAlreadyFollowed) {
+                return next(new AppErr("You already followed this user"));
+            } else {
+                // 5. push user who followed to  the users followers array
+                userToFollow.followers.push(userWhoFollowed._id);
+                // 6. push usertofollow to the userwhofollowed following array
+                userWhoFollowed.following.push(userToFollow._id);
+                // 7. save the users
+                await userWhoFollowed.save();
+                await userToFollow.save();
+                res.json({
+                    status: 'success',
+                    data: 'you have successfully followed this user'
+                })
+
+            }
+        }
+
+    } catch (error) {
+        res.json(error.message);
+    }
+}
+
 // who viewd my profile
 const whoViewedMyProfileCtrl = async (req, res, next) => {
     try {
@@ -190,5 +224,6 @@ module.exports = {
     deleteUsersCtrl,
     updateUserCtrl,
     whoViewedMyProfileCtrl,
-    profilePhotoUploadCtrl
+    profilePhotoUploadCtrl,
+    followingCtrl,
 }
