@@ -1,7 +1,7 @@
 const express = require('express');
 const storage = require("../../config/cloudinary");
 const userRouter = express.Router();
-const { userRegisterCtrl, userLoginCtrl, userProfileCtrl, usersCtrl, deleteUsersCtrl, updateUserCtrl, profilePhotoUploadCtrl, whoViewedMyProfile, whoViewedMyProfileCtrl, followingCtrl, unfollowCtrl } = require('../../controllers/usersController');
+const { userRegisterCtrl, userLoginCtrl, userProfileCtrl, usersCtrl, deleteUsersCtrl, updateUserCtrl, profilePhotoUploadCtrl, whoViewedMyProfile, whoViewedMyProfileCtrl, followingCtrl, unfollowCtrl, blockUserCtrl } = require('../../controllers/usersController');
 const multer = require("multer");
 const isLoggedIn = require('../../middlewares/isLoggedIn');
 
@@ -25,6 +25,8 @@ userRouter.get('/profile-viewers/:id', isLoggedIn, whoViewedMyProfileCtrl);
 userRouter.get('/following/:id', isLoggedIn, followingCtrl);
 
 userRouter.get('/unfollowing/:id', isLoggedIn, unfollowCtrl);
+
+userRouter.get('/block/:id', isLoggedIn, blockUserCtrl);
 
 userRouter.post("/profile-photo-upload", isLoggedIn, upload.single('profile'), profilePhotoUploadCtrl);
 

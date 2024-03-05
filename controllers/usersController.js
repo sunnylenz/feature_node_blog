@@ -91,6 +91,36 @@ const usersCtrl = async (req, res) => {
         res.json(error.message);
     }
 }
+// block user
+const blockUserCtrl = async (req, res, next) => {
+
+    try {
+        // 1. find te user to be blocked
+        const userToBeBlocked = await User.findById(req.params.id);
+        // 2. find the user who is blocking
+        const userWhoBlocked = await User.findById(req.userAuth);
+        // 3. check if user to be blocked and user who wants to block exists..
+        if (userToBeBlocked && userToBeBlocked) {
+            // 4. check if user who blocked is already in the user blocked array
+            const isUserAlreadyBlocked = userWhoBlocked.blocked.find(blocked => blocked.toString() === userToBeBlocked._id.toString());
+            if (isUserAlreadyBlocked) {
+                return next(new AppErr("You already blocked this user"));
+            }
+            //. 5 push userto be blocked to the user who blocked array
+            userWhoBlocked.blocked.push(userToBeBlocked._id);
+            //6 . save
+            await userWhoBlocked.save();
+            res.json({
+                status: 'success',
+                data: 'you have successfully blocked this user'
+            })
+        }
+
+    } catch (error) {
+        res.json(error.message);
+    }
+}
+
 // unfollowing a user
 const unfollowCtrl = async (req, res, next) => {
     try {
@@ -260,4 +290,5 @@ module.exports = {
     profilePhotoUploadCtrl,
     followingCtrl,
     unfollowCtrl,
+    blockUserCtrl,
 }
