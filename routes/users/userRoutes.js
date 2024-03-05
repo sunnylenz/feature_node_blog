@@ -4,6 +4,7 @@ const userRouter = express.Router();
 const { userRegisterCtrl, userLoginCtrl, userProfileCtrl, usersCtrl, deleteUsersCtrl, updateUserCtrl, profilePhotoUploadCtrl, whoViewedMyProfile, whoViewedMyProfileCtrl, followingCtrl, unfollowCtrl, blockUserCtrl, unblockUserCtrl, adminBlockCtrl } = require('../../controllers/usersController');
 const multer = require("multer");
 const isLoggedIn = require('../../middlewares/isLoggedIn');
+const isAdmin = require('../../middlewares/isAdmin');
 
 //instance of multer
 const upload = multer({ storage });
@@ -30,7 +31,7 @@ userRouter.get('/block/:id', isLoggedIn, blockUserCtrl);
 
 userRouter.get('/unblock/:id', isLoggedIn, unblockUserCtrl);
 
-userRouter.put('/admin-block/:id', isLoggedIn, adminBlockCtrl);
+userRouter.put('/admin-block/:id', isLoggedIn, isAdmin, adminBlockCtrl);
 
 userRouter.post("/profile-photo-upload", isLoggedIn, upload.single('profile'), profilePhotoUploadCtrl);
 

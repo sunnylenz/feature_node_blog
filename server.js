@@ -4,11 +4,14 @@ const postRouter = require("./routes/posts/postRoutes");
 const commentRouter = require("./routes/comments/commentRoutes");
 const categoriesRouter = require('./routes/categories/categoriesRouter');
 const globalErrorHandler = require('./middlewares/globalErrHandler');
+//const isAdmin = require('./middlewares/isAdmin');
 require('dotenv').config();// install dotenv, nodemon, express, mongoose, mongoex,con str
 require("./config/dbConnect");
 const app = express();
 
 app.use(express.json()) // pass incoming payload
+
+//app.use(isAdmin)
 
 //middlewares
 //routes
