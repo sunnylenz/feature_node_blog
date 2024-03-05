@@ -91,6 +91,34 @@ const usersCtrl = async (req, res) => {
         res.json(error.message);
     }
 }
+const unblockUserCtrl = async (req, res, next) => {
+    try {
+        // 1. find the user to be unblocked
+        const userToBeUnblocked = await User.findById(req.params.id);
+        // 2. find the user who wants to unblock
+        const user = await User.findById(req.userAuth);
+        // 3. check if userToBeunblocked and user exists
+        if (userToBeUnblocked && user) {
+            // 4. check if the usertobe unblocked is in the users blocked list
+            const isAlreadyBlocked = user.blocked.find(blocked => blocked.toString() === userToBeUnblocked._id.toString());
+            if (!isAlreadyBlocked) {
+                return next(new AppErr("You have not blocked this user"));
+            }
+            //5. remove the usertobeunblocked from the users block array
+            user.blocked = user.blocked.filter(blocked => blocked.toString() !== userToBeUnblocked._id.toString());
+            //6. save the user
+            await user.save();
+
+            res.json({
+                status: 'success',
+                data: 'you have successfully unblocked this user'
+            });
+        }
+
+    } catch (error) {
+        res.json(error.message);
+    }
+}
 // block user
 const blockUserCtrl = async (req, res, next) => {
 
@@ -291,4 +319,5 @@ module.exports = {
     followingCtrl,
     unfollowCtrl,
     blockUserCtrl,
+    unblockUserCtrl,
 }
