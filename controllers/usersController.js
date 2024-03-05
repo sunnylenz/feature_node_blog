@@ -91,6 +91,32 @@ const usersCtrl = async (req, res) => {
         res.json(error.message);
     }
 }
+
+const adminUnblockCtrl = async (req, res, next) => {
+    try {
+        // 1. find the user to be unblocked by the admin
+        const userToBeUnBlockedByAdmin = await User.findById(req.params.id);
+        // 2.  check if user is found
+        if (!userToBeUnBlockedByAdmin) {
+            return next(new AppErr("User not found"));
+        }
+
+        if (userToBeUnBlockedByAdmin.isBlocked === false) {
+            return next(new AppErr("You have not  blocked this user"));
+        }
+        // 3. change isBlocked user field to true
+        userToBeUnBlockedByAdmin.isBlocked = false;
+        //4. save the user
+        await userToBeUnBlockedByAdmin.save();
+        res.json({
+            status: 'success',
+            data: 'Admin has succefully unblocked this user'
+        })
+    } catch (error) {
+        res.json(error.message);
+    }
+}
+
 // admin block controller
 const adminBlockCtrl = async (req, res, next) => {
     try {
@@ -347,4 +373,5 @@ module.exports = {
     blockUserCtrl,
     unblockUserCtrl,
     adminBlockCtrl,
+    adminUnblockCtrl,
 }
