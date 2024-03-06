@@ -99,9 +99,23 @@ userSchema.pre("findOne", async function (next) {
         userSchema.virtual('isInActive').get(function () {
             return true;
         });
+
+        // find the user by ID and update
+        await User.findByIdAndUpdate(userId, {
+            isBlocked: true,
+        }, {
+            new: true
+        });
     } else {
         userSchema.virtual('isInactive').get(function () {
             return false;
+        });
+
+        // find the user by ID and update
+        await User.findByIdAndUpdate(userId, {
+            isBlocked: false,
+        }, {
+            new: true
         });
     }
 
