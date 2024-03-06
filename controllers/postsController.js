@@ -1,10 +1,24 @@
-
+const Post = require("../models/Post/Post");
+const User = require("../models/User/User");
 // creates a post
 const createPostCtrl = async (req, res) => {
+    const { title, description } = req.body
     try {
+        //1. find the user
+        const author = await User.findById(req.userAuth);
+        //2. create the post
+        const postCreated = await Post.create({
+            title,
+            description,
+            user: author._id,
+        });
+        //3. associate user to the post
+        author.posts.push(postCreated);
+        //4. save 
+        await author.save();
         res.json({
             status: 'success',
-            data: 'post created'
+            data: postCreated
         })
     } catch (error) {
         res.json(error.message);

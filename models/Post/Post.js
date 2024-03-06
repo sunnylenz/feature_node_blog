@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema({
     category: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Category",
-        required: [true, "Post category is required"]
+        //required: [true, "Post category is required"]
     },
     numViews: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -35,7 +35,7 @@ const postSchema = new mongoose.Schema({
     }],
     photo: {
         type: String,
-        required: [true, "Post image is required"],
+        // required: [true, "Post image is required"],
     },
 }, {
     timestamps: true,
@@ -43,4 +43,4 @@ const postSchema = new mongoose.Schema({
 
 // compile the Post model
 const Post = mongoose.model('Post', postSchema);
-module.exports(Post);
+module.exports = Post;
