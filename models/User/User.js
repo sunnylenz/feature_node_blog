@@ -71,6 +71,16 @@ const userSchema = new mongoose.Schema({
 userSchema.virtual("fullname").get(function () {
     return `${this.firstname} ${this.lastname}`
 });
+
+// get initials
+userSchema.virtual('initials').get(function () {
+    return `${this.firstname[0]}${this.lastname[0]}`
+});
+
+//get post count
+userSchema.virtual('postCounts').get(function () {
+    return this.posts.length;
+});
 // Compile the user model
 const User = mongoose.model('User', userSchema);
 module.exports = User;
