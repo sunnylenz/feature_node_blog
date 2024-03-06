@@ -67,6 +67,18 @@ const userSchema = new mongoose.Schema({
     },
 }, { timestamps: true, toJSON: { virtuals: true } });
 
+//hooks
+//pre - before record is saved /find/findOne
+userSchema.pre(/^find/, function (next) {
+    console.log('pre hook called');
+    next();
+})
+//post - after saving
+userSchema.post('save', function (next) {
+    console.log('Post hook called');
+    next()
+});
+
 // get fullname
 userSchema.virtual("fullname").get(function () {
     return `${this.firstname} ${this.lastname}`
@@ -89,7 +101,7 @@ userSchema.virtual('followersCount').get(function () {
 
 //get followings count
 userSchema.virtual("followingsCount").get(function () {
-    return this.followings.length;
+    return this.following.length;
 });
 // get viewers count
 userSchema.virtual('viewersCount').get(function () {
