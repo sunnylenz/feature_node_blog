@@ -83,15 +83,16 @@ const userProfileCtrl = async (req, res) => {
 
 const usersCtrl = async (req, res) => {
     try {
+        const users = await User.find();
         res.json({
             status: 'success',
-            data: 'users route'
+            data: users,
         })
     } catch (error) {
         res.json(error.message);
     }
 }
-
+//Admin unblocking a user
 const adminUnblockCtrl = async (req, res, next) => {
     try {
         // 1. find the user to be unblocked by the admin

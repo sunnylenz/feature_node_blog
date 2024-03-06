@@ -65,8 +65,12 @@ const userSchema = new mongoose.Schema({
         enum: ['Bronze', 'Silver', 'Gold'],
         default: 'Bronze'
     },
-}, { timestamps: true, });
+}, { timestamps: true, toJSON: { virtuals: true } });
 
+// get fullname
+userSchema.virtual("fullname").get(function () {
+    return `${this.firstname} ${this.lastname}`
+});
 // Compile the user model
 const User = mongoose.model('User', userSchema);
 module.exports = User;
