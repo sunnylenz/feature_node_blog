@@ -310,12 +310,42 @@ const deleteUsersCtrl = async (req, res) => {
         res.json(error.message);
     }
 }
+//update user
+const updateUserCtrl = async (req, res, next) => {
+    const { email, lastname, firstname } = req.body;
+    try {
+        // check if email is not taken
+        if (email) {
+            const emailTaken = await User.findOne({ email });
+            if (emailTaken) {
+                return next(new AppErr("Email is taken", 400));
+            }
+        }
+        //update the user
+        const user = await User.findByIdAndUpdate(req.userAuth, {
+            lastname,
+            firstname,
+            email,
+        }, {
+            new: true,
+            runValidators: true,
+        });
+        // send response
 
-const updateUserCtrl = async (req, res) => {
+        res.json({
+            status: 'success',
+            data: user,
+        });
+    } catch (error) {
+        res.json(error.message);
+    }
+}
+// update user password
+const updatePasswordCtrl = async (req, res) => {
     try {
         res.json({
             status: 'success',
-            data: 'user update'
+            data: 'password updated'
         })
     } catch (error) {
         res.json(error.message);
@@ -375,4 +405,5 @@ module.exports = {
     unblockUserCtrl,
     adminBlockCtrl,
     adminUnblockCtrl,
+    updatePasswordCtrl,
 }

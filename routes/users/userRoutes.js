@@ -19,7 +19,7 @@ userRouter.get('/', usersCtrl);
 
 userRouter.delete('/:id', deleteUsersCtrl);
 
-userRouter.put('/:id', updateUserCtrl);
+userRouter.put('/', isLoggedIn, updateUserCtrl);
 
 userRouter.get('/profile-viewers/:id', isLoggedIn, whoViewedMyProfileCtrl);
 
