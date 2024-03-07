@@ -136,7 +136,39 @@ userSchema.pre("findOne", async function (next) {
         if (daysAgo > 1) {
             return `${daysAgo} days ago`
         }
-    })
+    });
+
+    //.............................................
+    //Update user award based on the number of post
+    //.............................................
+    //get the number of posts
+    const numberOfPost = posts.length;
+    // check if number of post is less than 10
+    if (numberOfPost < 10) {
+        await User.findByIdAndUpdate(userId, {
+            userAward: "Bronze",
+        }, {
+            new: true,
+        });
+    }
+    // check if the number of post is greater than 10
+    if (numberOfPost > 10) {
+        await User.findByIdAndUpdate(userId, {
+            userAward: "Silver",
+        }, {
+            new: true,
+        });
+    }
+
+    // check if the number of post is more than 20
+    if (numberOfPost > 20) {
+        await User.findByIdAndUpdate(userId, {
+            userAward: "Gold",
+        }, {
+            new: true,
+        });
+    }
+
 
     next();
 })
