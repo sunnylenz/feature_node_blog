@@ -1,7 +1,7 @@
 const express = require('express');
 const storage = require("../../config/cloudinary");
 const userRouter = express.Router();
-const { userRegisterCtrl, userLoginCtrl, userProfileCtrl, usersCtrl, deleteUsersCtrl, updateUserCtrl, profilePhotoUploadCtrl, whoViewedMyProfile, whoViewedMyProfileCtrl, followingCtrl, unfollowCtrl, blockUserCtrl, unblockUserCtrl, adminBlockCtrl, adminUnblockCtrl, updatePasswordCtrl, deleteUserAccountCtrl } = require('../../controllers/usersController');
+const { userRegisterCtrl, userLoginCtrl, userProfileCtrl, usersCtrl, updateUserCtrl, profilePhotoUploadCtrl, whoViewedMyProfile, whoViewedMyProfileCtrl, followingCtrl, unfollowCtrl, blockUserCtrl, unblockUserCtrl, adminBlockCtrl, adminUnblockCtrl, updatePasswordCtrl, deleteUserAccountCtrl } = require('../../controllers/usersController');
 const multer = require("multer");
 const isLoggedIn = require('../../middlewares/isLoggedIn');
 const isAdmin = require('../../middlewares/isAdmin');
@@ -16,8 +16,6 @@ userRouter.post('/login', userLoginCtrl);
 userRouter.get('/profile/:id', isLoggedIn, userProfileCtrl);
 
 userRouter.get('/', usersCtrl);
-
-//userRouter.delete('/:id', deleteUsersCtrl);
 
 userRouter.put('/', isLoggedIn, updateUserCtrl);
 

@@ -11,7 +11,7 @@ const Category = require('../models/Category/Category');
 
 
 const userRegisterCtrl = async (req, res, next) => {
-    const { firstname, lastname, profilePhoto, email, password } = req.body
+    const { firstname, lastname, email, password } = req.body
     try {
         //check if email exist
         const userFound = await User.findOne({ email });
@@ -35,7 +35,7 @@ const userRegisterCtrl = async (req, res, next) => {
             data: user,
         });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
@@ -45,12 +45,13 @@ const userLoginCtrl = async (req, res, next) => {
     try {
         //check if email exists
         const userFound = await User.findOne({ email });
+        if (!userFound) {
+            return next(new AppErr("Invalid login credentials"));
+        }
         // verify password
         const isPasswordMatched = await bcrypt.compare(password, userFound.password);
-        if (!userFound || !isPasswordMatched) {
-            return res.json({
-                msg: "Invalid login credentials"
-            });
+        if (!isPasswordMatched) {
+            return next(new AppErr("Invalid login credentials"));
         }
         res.json({
             status: 'success',
@@ -63,7 +64,7 @@ const userLoginCtrl = async (req, res, next) => {
             },
         });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
@@ -80,7 +81,7 @@ const userProfileCtrl = async (req, res, next) => {
             data: user,
         })
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
@@ -93,7 +94,7 @@ const usersCtrl = async (req, res, next) => {
             data: users,
         })
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 //Admin unblocking a user
@@ -118,7 +119,7 @@ const adminUnblockCtrl = async (req, res, next) => {
             data: 'Admin has succefully unblocked this user'
         })
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
@@ -144,7 +145,7 @@ const adminBlockCtrl = async (req, res, next) => {
             data: 'Admin has succefully blocked this user'
         })
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
@@ -173,7 +174,7 @@ const unblockUserCtrl = async (req, res, next) => {
         }
 
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 // block user
@@ -198,11 +199,11 @@ const blockUserCtrl = async (req, res, next) => {
             res.json({
                 status: 'success',
                 data: 'you have successfully blocked this user'
-            })
+            });
         }
 
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
@@ -236,7 +237,7 @@ const unfollowCtrl = async (req, res, next) => {
         }
 
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 // following
@@ -269,7 +270,7 @@ const followingCtrl = async (req, res, next) => {
         }
 
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
@@ -295,25 +296,14 @@ const whoViewedMyProfileCtrl = async (req, res, next) => {
                 res.json({
                     status: 'success',
                     data: 'you have successfully viewed this profile'
-                })
+                });
             }
         }
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
-
-const deleteUsersCtrl = async (req, res) => {
-    try {
-        res.json({
-            status: 'success',
-            data: 'delete user route'
-        })
-    } catch (error) {
-        res.json(error.message);
-    }
-}
 const deleteUserAccountCtrl = async (req, res, next) => {
     try {
         // find the user to be deleted
@@ -336,7 +326,7 @@ const deleteUserAccountCtrl = async (req, res, next) => {
             data: 'Your account has been successfully deleted',
         });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 //update user
@@ -366,7 +356,7 @@ const updateUserCtrl = async (req, res, next) => {
             data: user,
         });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 // update user password
@@ -395,11 +385,11 @@ const updatePasswordCtrl = async (req, res, next) => {
         }
 
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 const profilePhotoUploadCtrl = async (req, res) => {
-    console.log(req.file);
+    //console.log(req.file);
     try {
         //1. Find the user to be updated
         const userToUpdate = await User.findById(req.userAuth);
@@ -433,7 +423,7 @@ const profilePhotoUploadCtrl = async (req, res) => {
         }
 
     } catch (error) {
-        res.json(new AppErr(error.message, 500));
+        next(new AppErr(error.message, 500));
     }
 }
 
@@ -442,7 +432,6 @@ module.exports = {
     userLoginCtrl,
     userProfileCtrl,
     usersCtrl,
-    //deleteUsersCtrl,
     updateUserCtrl,
     whoViewedMyProfileCtrl,
     profilePhotoUploadCtrl,
