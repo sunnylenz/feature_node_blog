@@ -32,12 +32,13 @@ const categoriesCtrl = async (req, res, next) => {
 
 const categoryCtrl = async (req, res, next) => {
     try {
+        const category = await Category.findById(req.params.id);
         res.json({
             status: 'success',
-            data: 'category route'
+            data: category,
         })
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
