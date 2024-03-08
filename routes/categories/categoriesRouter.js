@@ -1,11 +1,11 @@
 const express = require('express');
 const categoriesRouter = express.Router();
 const { createCategoriesCtrl, categoriesCtrl, categoryCtrl, deleteCategoryCtrl, updateCategoriesCtrl } = require('../../controllers/categoriesController');
-
+const isLoggedIn = require("../../middlewares/isLoggedIn");
 
 
 //POST/api/v1/categories
-categoriesRouter.post('/', createCategoriesCtrl);
+categoriesRouter.post('/', isLoggedIn, createCategoriesCtrl);
 
 //GET/api/v1/categories
 categoriesRouter.get('/', categoriesCtrl)

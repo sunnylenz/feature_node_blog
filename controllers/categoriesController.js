@@ -1,28 +1,36 @@
-const createCategoriesCtrl = async (req, res) => {
+const Category = require("../models/Category/Category");
+const { AppErr } = require("../utils/appErr");
+const createCategoriesCtrl = async (req, res, next) => {
+    const { title } = req.body;
     try {
+        const titleFound = await Category.findOne({ title });
+        if (titleFound) {
+            return next(new AppErr("Category aready exist"));
+        }
+        const category = await Category.create({ title, user: req.userAuth })
         res.json({
             status: 'success',
-            data: 'categories created'
+            data: category,
         })
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
-const categoriesCtrl = async (req, res) => {
+const categoriesCtrl = async (req, res, next) => {
     try {
+        const categories = await Category.find();
         res.json({
             status: 'success',
-            data: 'Categories Route'
-        })
+            results: categories.length,
+            data: categories,
+        });
     } catch (error) {
-        res.json(
-            error.message
-        )
+        next(new AppErr(error.message));
     }
 }
 
-const categoryCtrl = async (req, res) => {
+const categoryCtrl = async (req, res, next) => {
     try {
         res.json({
             status: 'success',
