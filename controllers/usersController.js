@@ -4,6 +4,9 @@ const User = require("../models/User/User");
 const generateToken = require("../utils/generateToken");
 const getTokenFromHeader = require('../utils/getTokenFromHeader');
 const { AppErr } = require('../utils/appErr');
+const Post = require('../models/Post/Post');
+const Comment = require('../models/Comment/Comment');
+const Category = require('../models/Category/Category');
 
 
 
@@ -32,12 +35,12 @@ const userRegisterCtrl = async (req, res, next) => {
             data: user,
         });
     } catch (error) {
-        next(new AppErr(error.message));
+        res.json(error.message);
     }
 }
 
 
-const userLoginCtrl = async (req, res) => {
+const userLoginCtrl = async (req, res, next) => {
     const { email, password } = req.body;
     try {
         //check if email exists
@@ -64,7 +67,7 @@ const userLoginCtrl = async (req, res) => {
     }
 }
 
-const userProfileCtrl = async (req, res) => {
+const userProfileCtrl = async (req, res, next) => {
 
     const { id } = req.params;
     try {
@@ -81,11 +84,12 @@ const userProfileCtrl = async (req, res) => {
     }
 }
 
-const usersCtrl = async (req, res) => {
+const usersCtrl = async (req, res, next) => {
     try {
         const users = await User.find();
         res.json({
             status: 'success',
+            results: users.length,
             data: users,
         })
     } catch (error) {
@@ -310,6 +314,31 @@ const deleteUsersCtrl = async (req, res) => {
         res.json(error.message);
     }
 }
+const deleteUserAccountCtrl = async (req, res, next) => {
+    try {
+        // find the user to be deleted
+        const userToDelete = await User.findById(req.userAuth);
+        if (!userToDelete) {
+            return next(new AppErr("user can't be found", 400));
+        }
+        // find all post to be deleted 
+        await Post.deleteMany({ user: req.userAuth });
+        // delete all comments of the user
+        await Comment.deleteMany({ user: req.userAuth });
+        // delete all categories by the user
+        await Category.deleteMany({ user: req.userAuth });
+
+        // delete the user
+        await userToDelete.deleteOne();
+        // send response
+        return res.json({
+            status: 'success',
+            data: 'Your account has been successfully deleted',
+        });
+    } catch (error) {
+        res.json(error.message);
+    }
+}
 //update user
 const updateUserCtrl = async (req, res, next) => {
     const { email, lastname, firstname } = req.body;
@@ -413,7 +442,7 @@ module.exports = {
     userLoginCtrl,
     userProfileCtrl,
     usersCtrl,
-    deleteUsersCtrl,
+    //deleteUsersCtrl,
     updateUserCtrl,
     whoViewedMyProfileCtrl,
     profilePhotoUploadCtrl,
@@ -424,4 +453,5 @@ module.exports = {
     adminBlockCtrl,
     adminUnblockCtrl,
     updatePasswordCtrl,
+    deleteUserAccountCtrl
 }

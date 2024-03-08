@@ -177,10 +177,10 @@ userSchema.pre("findOne", async function (next) {
     next();
 })
 //post - after saving
-userSchema.post('save', function (next) {
-    console.log('Post hook called');
-    next()
-});
+// userSchema.post('save', function (next) {
+//     console.log('Post hook called');
+//     next()
+// });
 
 // get fullname
 userSchema.virtual("fullname").get(function () {
