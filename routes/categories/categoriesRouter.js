@@ -15,9 +15,9 @@ categoriesRouter.get('/:id', categoryCtrl);
 
 
 //DELETE/api/v1/categoriess/:id
-categoriesRouter.delete('/:id', deleteCategoryCtrl);
+categoriesRouter.delete('/:id', isLoggedIn, deleteCategoryCtrl);
 
 //PUT/api/v1/categories/:id
-categoriesRouter.put('/:id', updateCategoriesCtrl);
+categoriesRouter.put('/:id', isLoggedIn, updateCategoriesCtrl);
 
 module.exports = categoriesRouter;

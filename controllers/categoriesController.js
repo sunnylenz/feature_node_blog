@@ -42,25 +42,32 @@ const categoryCtrl = async (req, res, next) => {
     }
 }
 
-const deleteCategoryCtrl = async (req, res) => {
+const deleteCategoryCtrl = async (req, res, next) => {
     try {
+        await Category.findByIdAndDelete(req.params.id);
         res.json({
             status: 'success',
-            data: 'delete categories route'
+            data: 'Deleted successfully'
         });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
-const updateCategoriesCtrl = async (req, res) => {
+const updateCategoriesCtrl = async (req, res, next) => {
+    const { title } = req.body;
     try {
+        const titleFound = await Category.findOne({ title });
+        if (titleFound) {
+            return next(new AppErr("Category Already Exists"));
+        }
+        const category = await Category.findByIdAndUpdate(req.params.id, { title }, { new: true, runValidators: true });
         res.json({
             status: 'success',
-            data: 'categories update'
-        })
+            data: category,
+        });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
