@@ -32,26 +32,44 @@ const createPostCtrl = async (req, res, next) => {
 }
 
 // gets a single post
-const getPostCtrl = async (req, res) => {
+const getPostCtrl = async (req, res, next) => {
     try {
         res.json({
             status: 'success',
             data: 'post route'
         })
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 
 // returns an array of all posts
-const postsCtrl = async (req, res) => {
+const postsCtrl = async (req, res, next) => {
     try {
+        //Find all posts
+        const posts = await Post.find({})
+            .populate("category", "title")
+            .populate("user");
+
+        //check if the user is blocked by the post owner
+        const filteredPosts = posts.filter(post => {
+            // get all blocked users
+            const blockedUsers = post.user.blocked;
+            //console.log(blockedUsers);
+            // check if the users id is the post owners blocked users array
+            const isBlocked = blockedUsers.includes(req.userAuth);
+
+            return !isBlocked;
+        });
+
+
         res.json({
-            status: 'success',
-            data: 'posts route'
-        })
+            status: "success",
+            results: posts.length,
+            data: filteredPosts,
+        });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 

@@ -28,11 +28,11 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
-    user: [{
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Author is required"]
-    }],
+    },
     photo: {
         type: String,
         // required: [true, "Post image is required"],
