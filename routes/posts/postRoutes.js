@@ -8,7 +8,7 @@ postRouter.post('/', isLoggedIn, createPostCtrl);
 
 
 //GET/api/v1/posts/:id
-postRouter.get('/:id', getPostCtrl);
+postRouter.get('/:id', isLoggedIn, getPostCtrl);
 
 postRouter.get('/likes/:id', isLoggedIn, toggleLikesCtrl);
 postRouter.get('/dislikes/:id', isLoggedIn, toggleDislikesCtrl);

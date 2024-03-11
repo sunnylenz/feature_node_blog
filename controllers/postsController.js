@@ -33,11 +33,29 @@ const createPostCtrl = async (req, res, next) => {
 
 // gets a single post
 const getPostCtrl = async (req, res, next) => {
+    //
     try {
-        res.json({
-            status: 'success',
-            data: 'post route'
-        })
+        // find the post
+        const post = await Post.findById(req.params.id);
+        // number of views
+        //check if user has viewed this post
+        const isViewed = post.numViews.includes(req.userAuth);
+        if (isViewed) {
+            res.json({
+                status: 'success',
+                data: post,
+            });
+        } else {
+            // push the user into num of views
+            post.numViews.push(req.userAuth);
+            // save
+            await post.save();
+            res.json({
+                status: 'success',
+                data: post,
+            });
+
+        }
     } catch (error) {
         next(new AppErr(error.message));
     }
