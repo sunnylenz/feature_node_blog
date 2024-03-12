@@ -4,6 +4,7 @@ const { AppErr } = require("../utils/appErr");
 // creates a post
 const createPostCtrl = async (req, res, next) => {
     const { title, description, category } = req.body
+    console.log(req.file);
     try {
         //1. find the user
         const author = await User.findById(req.userAuth);
@@ -11,12 +12,14 @@ const createPostCtrl = async (req, res, next) => {
         if (author.isBlocked) {
             return next(new AppErr("Access denied, account blocked", 403));
         }
+
         //2. create the post
         const postCreated = await Post.create({
             title,
             description,
             category,
             user: author._id,
+            photo: req?.file?.path, //req && req.file && req.file.path,
         });
         //3. associate user to the post
         author.posts.push(postCreated);
@@ -154,14 +157,22 @@ const postsCtrl = async (req, res, next) => {
 
 
 // deetes the given post
-const deletePostCtrl = async (req, res) => {
+const deletePostCtrl = async (req, res, next) => {
     try {
+        // find the post
+        const post = await Post.findById(req.params.id);
+        // check if the post belongs to the user
+        if (post.user.toString() !== req.userAuth.toString()) {
+            return next(new AppErr("You are not allowed to delete this post", 403))
+        }
+
+        await Post.findByIdAndDelete(req.params.id);
         res.json({
             status: 'success',
-            data: 'delete post route'
+            data: 'post deleted succesfully'
         });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 

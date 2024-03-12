@@ -1,10 +1,15 @@
 const express = require("express");
+const storage = require("../../config/cloudinary");
+const multer = require("multer")
 const { createPostCtrl, getPostCtrl, postsCtrl, deletePostCtrl, updatePostCtrl, toggleLikesCtrl, toggleDislikesCtrl } = require("../../controllers/postsController");
 const isLoggedIn = require("../../middlewares/isLoggedIn");
 
 const postRouter = express.Router();
 
-postRouter.post('/', isLoggedIn, createPostCtrl);
+//file upload middleware
+const upload = multer({ storage })
+
+postRouter.post('/', isLoggedIn, upload.single("image"), createPostCtrl);
 
 
 //GET/api/v1/posts/:id
@@ -17,7 +22,7 @@ postRouter.get('/dislikes/:id', isLoggedIn, toggleDislikesCtrl);
 postRouter.get('/', isLoggedIn, postsCtrl);
 
 //DELETE/api/v1/posts/:id
-postRouter.delete('/:id', deletePostCtrl);
+postRouter.delete('/:id', isLoggedIn, deletePostCtrl);
 
 //PUT/api/v1/posts/:id
 postRouter.put('/:id', updatePostCtrl);
