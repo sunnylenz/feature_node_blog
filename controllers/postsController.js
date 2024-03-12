@@ -66,6 +66,11 @@ const toggleLikesCtrl = async (req, res, next) => {
     try {
         // 1. get the post
         const post = await Post.findById(req.params.id);
+        // make sure a user cant both like and dislike a post 
+        const disliked = post.dislikes.includes(req.userAuth);
+        if (disliked) {
+            return next(new AppErr("You can't like and dislike same post"));
+        }
         // 2. check if the user has already liked the post
         const isLiked = post.likes.includes(req.userAuth);
         // 3. if the user has already liked the pos, then unlike
@@ -91,6 +96,11 @@ const toggleDislikesCtrl = async (req, res, next) => {
     try {
         // 1. get the post
         const post = await Post.findById(req.params.id);
+        // make sure a user cant both like and dislike a post 
+        const liked = post.likes.includes(req.userAuth);
+        if (liked) {
+            return next(new AppErr("You can't like and dislike same post"));
+        }
         // 2. check if the user has already liked the post
         const isUnliked = post.dislikes.includes(req.userAuth);
         // 3. if the user has already unliked the pos, then unlike

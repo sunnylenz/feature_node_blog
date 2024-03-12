@@ -48,6 +48,16 @@ postSchema.pre(/^find/, function (next) {
     postSchema.virtual('viewsCount').get(function () {
         return this.numViews.length;
     });
+
+    // add likes count
+    postSchema.virtual('likesCount').get(function () {
+        return this.likes.length;
+    });
+
+    // add dislikes count
+    postSchema.virtual('dislikeCount').get(function () {
+        return this.dislikes.length;
+    });
     next()
 });
 // compile the Post model
