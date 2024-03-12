@@ -31,7 +31,7 @@ const createPostCtrl = async (req, res, next) => {
     }
 }
 
-// gets a single post
+// gets a single post and number of views of a post
 const getPostCtrl = async (req, res, next) => {
     //
     try {

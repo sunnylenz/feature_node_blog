@@ -39,8 +39,17 @@ const postSchema = new mongoose.Schema({
     },
 }, {
     timestamps: true,
+    toJSON: { virtuals: true }
 });
 
+//hook
+postSchema.pre(/^find/, function (next) {
+    // add views count
+    postSchema.virtual('viewsCount').get(function () {
+        return this.numViews.length;
+    });
+    next()
+});
 // compile the Post model
 const Post = mongoose.model('Post', postSchema);
 module.exports = Post;
