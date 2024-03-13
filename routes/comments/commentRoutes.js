@@ -15,6 +15,6 @@ commentRouter.get('/:id', commentCtrl);
 commentRouter.delete('/:id', deleteCommentCtrl);
 
 //PUT/api/v1/comments/:id
-commentRouter.put('/:id', updateCommentCtrl);
+commentRouter.put('/:id', isLoggedIn, updateCommentCtrl);
 
 module.exports = commentRouter;
