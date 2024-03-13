@@ -178,14 +178,30 @@ const deletePostCtrl = async (req, res, next) => {
 
 
 // updates the given post
-const updatePostCtrl = async (req, res) => {
+const updatePostCtrl = async (req, res, next) => {
+    const { title, description, category } = req.body;
     try {
+        // find the post
+        const post = await Post.findById(req.params.id);
+        // check if the post belongs to the user
+        if (post.user.toString() !== req.userAuth.toString()) {
+            return next(new AppErr("You are not allowed to update  this post", 403))
+        }
+
+        await Post.findByIdAndUpdate(req.params.id, {
+            title,
+            description,
+            category,
+            photo: req?.file?.path,
+        }, {
+            new: true,
+        });
         res.json({
             status: 'success',
-            data: 'post update'
-        })
+            data: post,
+        });
     } catch (error) {
-        res.json(error.message);
+        next(new AppErr(error.message));
     }
 }
 

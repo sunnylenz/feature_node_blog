@@ -25,7 +25,7 @@ postRouter.get('/', isLoggedIn, postsCtrl);
 postRouter.delete('/:id', isLoggedIn, deletePostCtrl);
 
 //PUT/api/v1/posts/:id
-postRouter.put('/:id', updatePostCtrl);
+postRouter.put('/:id', isLoggedIn, upload.single("image"), updatePostCtrl);
 
 
 
