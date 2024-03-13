@@ -124,7 +124,6 @@ const toggleDislikesCtrl = async (req, res, next) => {
     }
 }
 
-
 // returns an array of all posts
 const postsCtrl = async (req, res, next) => {
     try {
@@ -155,7 +154,6 @@ const postsCtrl = async (req, res, next) => {
     }
 }
 
-
 // deetes the given post
 const deletePostCtrl = async (req, res, next) => {
     try {
@@ -175,7 +173,6 @@ const deletePostCtrl = async (req, res, next) => {
         next(new AppErr(error.message));
     }
 }
-
 
 // updates the given post
 const updatePostCtrl = async (req, res, next) => {
